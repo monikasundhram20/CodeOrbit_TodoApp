@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>To-Do List | Monika Sundhram</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f7fe;--card:#fff;--text:#0f1b3d;--muted:#5b6788;--primary:#2563eb;--primary2:#7c3aed;--accent:#e3ecff;--border:#dbe4f7;--danger:#e11d48;--ok:#16a34a;--shadow:0 14px 40px rgba(30,64,175,.14);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1020;--card:#121b33;--text:#e9efff;--muted:#9fb0d8;--primary:#6ea0ff;--primary2:#a78bfa;--accent:#1a2848;--border:#24335c;--danger:#fb7185;--ok:#4ade80;--shadow:0 14px 40px rgba(0,0,0,.4);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0a1020;--card:#121b33;--text:#e9efff;--muted:#9fb0d8;--primary:#6ea0ff;--primary2:#a78bfa;--accent:#1a2848;--border:#24335c;--danger:#fb7185;--ok:#4ade80;--shadow:0 14px 40px rgba(0,0,0,.4);color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html,body{min-height:100%}
+body{margin:0;font-family:"Poppins",system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text);line-height:1.5;
+background:radial-gradient(900px 400px at 85% -10%,rgba(124,58,237,.22),transparent),radial-gradient(800px 400px at -10% 110%,rgba(37,99,235,.22),transparent),var(--bg);padding:28px 16px 60px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{max-width:620px;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.top h1{margin:0;font-size:clamp(1.6rem,6vw,2.1rem);font-weight:800}
+.grad{background:linear-gradient(90deg,var(--primary),var(--primary2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{margin:2px 0 0;color:var(--muted);font-size:.9rem}
+.icon-btn{background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:12px;width:42px;height:42px;font-size:1.05rem;box-shadow:var(--shadow)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);padding:22px}
+.progress{margin-bottom:18px}
+.p-top{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted);font-weight:500;margin-bottom:6px}
+.p-bar{height:10px;background:var(--accent);border-radius:99px;overflow:hidden}
+.p-bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--primary2));border-radius:99px;transition:width .5s}
+.add{display:flex;gap:10px;margin-bottom:16px}
+.add input{flex:1;min-width:0;padding:13px 16px;border-radius:14px;border:2px solid var(--border);background:var(--bg);color:var(--text);outline:none;transition:.2s}
+.add input:focus,.edit-input:focus{border-color:var(--primary)}
+.btn-add{border:0;border-radius:14px;padding:0 22px;color:#fff;font-weight:600;background:linear-gradient(90deg,var(--primary),var(--primary2));box-shadow:0 8px 20px rgba(79,70,229,.35);transition:.2s}
+.btn-add:hover{transform:translateY(-2px)}
+.filters{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.f{background:var(--accent);color:var(--primary);border:1px solid var(--border);border-radius:999px;padding:6px 16px;font-size:.85rem;font-weight:600}
+.f.on{background:var(--primary);color:#fff;border-color:var(--primary)}
+ul{list-style:none;margin:0;padding:0}
+li{display:flex;align-items:center;gap:12px;padding:12px 12px;border:1px solid var(--border);border-radius:16px;margin-bottom:10px;background:var(--bg);animation:pop .3s ease}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.98)}}
+li:hover{border-color:var(--primary)}
+.chk{appearance:none;-webkit-appearance:none;width:24px;height:24px;border-radius:8px;border:2px solid var(--primary);flex:none;cursor:pointer;display:grid;place-items:center;transition:.2s;margin:0}
+.chk:checked{background:var(--ok);border-color:var(--ok)}
+.chk:checked::after{content:"✓";color:#fff;font-size:.85rem;font-weight:700}
+.txt{flex:1;min-width:0;word-break:break-word;font-size:.98rem}
+li.done .txt{text-decoration:line-through;color:var(--muted)}
+.edit-input{flex:1;min-width:0;padding:8px 12px;border-radius:10px;border:2px solid var(--primary);background:var(--card);color:var(--text);outline:none}
+.act{display:flex;gap:6px;flex:none}
+.act button{border:0;border-radius:10px;width:36px;height:36px;background:var(--accent);font-size:.95rem;transition:.2s}
+.act .ed:hover{background:var(--primary)}
+.act .del:hover{background:var(--danger)}
+.empty{text-align:center;padding:30px 10px;color:var(--muted)}
+.empty b{display:block;font-size:2.4rem}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:.88rem;color:var(--muted);gap:10px;flex-wrap:wrap}
+.clear{background:none;border:0;color:var(--danger);font-weight:600}
+.clear:hover{text-decoration:underline}
+.credit{text-align:center;margin-top:22px;color:var(--muted);font-size:.8rem}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div>
+      <h1><span class="grad">My To-Do List</span></h1>
+      <p class="sub" id="date"></p>
+    </div>
+    <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">🌓</button>
+  </div>
+
+  <div class="card">
+    <div class="progress">
+      <div class="p-top"><span id="pText">0 of 0 tasks done</span><span id="pPct">0%</span></div>
+      <div class="p-bar"><span id="pBar"></span></div>
+    </div>
+
+    <div class="add">
+      <input id="newTask" type="text" placeholder="What do you need to do?" maxlength="120" autocomplete="off">
+      <button class="btn-add" id="addBtn">Add</button>
+    </div>
+
+    <div class="filters" id="filters">
+      <button class="f on" data-f="all">All</button>
+      <button class="f" data-f="active">Active</button>
+      <button class="f" data-f="done">Completed</button>
+    </div>
+
+    <ul id="list"></ul>
+
+    <div class="foot">
+      <span id="left">0 tasks left</span>
+      <button class="clear" id="clearBtn">Clear completed</button>
+    </div>
+  </div>
+  <div class="credit">Built by Monika Sundhram · HTML, CSS &amp; JavaScript</div>
+</div>
+
+<script>
+(function(){
+  var KEY='todo-tasks',root=document.documentElement;
+  var tasks=[],filter='all',editing=null;
+  var $=function(id){return document.getElementById(id)};
+  var list=$('list'),input=$('newTask');
+
+  function load(){try{tasks=JSON.parse(localStorage.getItem(KEY))||[]}catch(e){tasks=[]}if(!Array.isArray(tasks))tasks=[]}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(tasks))}catch(e){}}
+
+  try{var th=localStorage.getItem('todo-theme');if(th)root.setAttribute('data-theme',th)}catch(e){}
+  $('themeBtn').onclick=function(){
+    var cur=root.getAttribute('data-theme'),dark=cur==='dark'||(!cur&&matchMedia('(prefers-color-scheme: dark)').matches),n=dark?'light':'dark';
+    root.setAttribute('data-theme',n);try{localStorage.setItem('todo-theme',n)}catch(e){}
+  };
+  $('date').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  function add(){
+    var v=input.value.trim();if(!v)return;
+    tasks.unshift({id:Date.now(),text:v,done:false});
+    input.value='';save();render();
+  }
+  $('addBtn').onclick=add;
+  input.addEventListener('keydown',function(e){if(e.key==='Enter')add()});
+
+  $('filters').onclick=function(e){
+    var b=e.target.closest('.f');if(!b)return;
+    filter=b.dataset.f;
+    document.querySelectorAll('.f').forEach(function(x){x.classList.toggle('on',x===b)});
+    render();
+  };
+  $('clearBtn').onclick=function(){
+    if(!tasks.some(function(t){return t.done}))return;
+    tasks=tasks.filter(function(t){return!t.done});save();render();
+  };
+
+  function el(tag,cls,txt){var n=document.createElement(tag);if(cls)n.className=cls;if(txt!=null)n.textContent=txt;return n}
+
+  function render(){
+    list.innerHTML='';
+    var shown=tasks.filter(function(t){return filter==='all'||(filter==='done'?t.done:!t.done)});
+    if(!shown.length){
+      var em=el('div','empty');em.appendChild(el('b',null,filter==='done'?'🎯':'📝'));
+      em.appendChild(el('span',null,tasks.length?'Nothing here yet.':'No tasks yet. Add your first one!'));
+      list.appendChild(em);
+    }
+    shown.forEach(function(t){
+      var li=el('li',t.done?'done':'');
+      var cb=el('input','chk');cb.type='checkbox';cb.checked=t.done;cb.setAttribute('aria-label','Mark done');
+      cb.onchange=function(){t.done=cb.checked;save();render()};
+      li.appendChild(cb);
+      var act=el('div','act');
+      if(editing===t.id){
+        var ei=el('input','edit-input');ei.value=t.text;ei.maxLength=120;
+        var commit=function(){var v=ei.value.trim();if(v)t.text=v;editing=null;save();render()};
+        ei.addEventListener('keydown',function(e){if(e.key==='Enter')commit();if(e.key==='Escape'){editing=null;render()}});
+        li.appendChild(ei);
+        var ok=el('button','ed','✔');ok.title='Save';ok.onclick=commit;act.appendChild(ok);
+        setTimeout(function(){ei.focus();ei.select()},0);
+      }else{
+        li.appendChild(el('span','txt',t.text));
+        var ed=el('button','ed','✏️');ed.title='Edit';ed.onclick=function(){editing=t.id;render()};act.appendChild(ed);
+      }
+      var del=el('button','del','🗑️');del.title='Delete';
+      del.onclick=function(){tasks=tasks.filter(function(x){return x.id!==t.id});save();render()};
+      act.appendChild(del);li.appendChild(act);
+      list.appendChild(li);
+    });
+    var total=tasks.length,done=tasks.filter(function(t){return t.done}).length,pct=total?Math.round(done/total*100):0;
+    $('pText').textContent=done+' of '+total+' tasks done';
+    $('pPct').textContent=pct+'%';$('pBar').style.width=pct+'%';
+    var left=total-done;$('left').textContent=left+(left===1?' task left':' tasks left');
+  }
+  load();render();
+})();
+</script>
+</body>
+</html>
